@@ -1,0 +1,33 @@
+Inputs: 
+Email
+Country
+Zip Code
+Password
+Confirm password
+
+
+
+Email field: If any text is entered, begin validating. If invalid, outline the field in red. If the user
+leaves the field and it's still red, change the background color to reddish.
+
+Country field: If a user clicks this field and does not select a country, outline it in red
+
+Zip Code: Same as email field
+
+Password: When a password field is active, a speech bubble should be displayed next to it that specifies the requirements
+Let the requirements have an x or a check next to them that changes as the input is entered
+
+If any text is entered, begin validating, etc.
+
+
+When the user leaves a field, it should be validated
+Invalid fields should have a red outline, the background should be reddened
+
+fieldset (Password, Confirm password)
+
+Let each field have a placeholder. Except for country field, when a field is active, let the placeholder text get animated 
+with a translation upwards and a font-size reduction. (This might be a span instead of a placeholder)
+
+
+If a form is submitted with errors, display a message at the top that says "Houston, we have a problem." - Jim Lovell (Tom Hanks) in "Apollo 13" (1995).
+If the form errors are fixed, update the message with "Hakuna Matata! It means no worries." - Timon and Pumbaa in "The Lion King" (1994).
