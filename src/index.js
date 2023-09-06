@@ -4,13 +4,23 @@ const inputFields = document.querySelectorAll("input");
 inputFields.forEach((input) => {
   input.addEventListener("focus", () => {
     // Toggle off descriptorTransform on any active input
-    const activeDescriptor = document.querySelector(".descriptorTransform");
-    if (activeDescriptor) {
-      activeDescriptor.classList.toggle("descriptorTransform");
-    }
+    // but only if it's empty
+    const activeDescriptors = document.querySelectorAll(".descriptorTransform");
+    activeDescriptors.forEach(descriptor => {
+      const activeInput = descriptor.nextElementSibling;
+      if (activeInput.value === '') {
+        descriptor.classList.remove("descriptorTransform");
+      }
+    })
+    // const activeDescriptor = document.querySelector(".descriptorTransform");
+    // if (activeDescriptor && input.value === null) {
+    //   activeDescriptor.classList.toggle("descriptorTransform");
+    // }
     // Toggle on descriptorTransform on this input's descriptor
     const descriptor = input.previousElementSibling;
-    descriptor.classList.toggle("descriptorTransform");
+    if (!descriptor.classList.contains("descriptorTranform")) {
+      descriptor.classList.add("descriptorTransform");
+    }
   });
 
   // The change event fires when an input loses focus after having its value changed
@@ -38,35 +48,91 @@ inputFields.forEach((input) => {
   });
 });
 
-// Report back problems with password
-passField = document.getElementById('password');
-passField.addEventListener('input', (event) => {
-    // Password requirements:
-    // At least 1 uppercase letter
-    // At least 1 lowercase letter
-    // At least 1 number or special character
-    // At least 8 characters long
-    const enteredPass = passField.value;
-    console.log(enteredPass);
-    // If password doesn't contain an uppercase letter
-    const upperCase = new RegExp('[A-Z]');
-    if (upperCase.test(enteredPass)) {
-        console.log("Uppercase letter satisfied");
-    }
+function updateReqs(enteredPass) {
+  const uppercase = new RegExp("[A-Z]");
+  const lowercase = new RegExp("[a-z]");
+  const numChar = new RegExp(/[0-9!@#$%^&*()_+={}\[\]:;<>,.?~\\\|\/-]/);
+  const minEightChars = new RegExp(/^.{8,}$/);
 
-    const lowerCase = new RegExp('[a-z]');
-    if (lowerCase.test(enteredPass)) {
-        console.log("Lowercase letter satisfied");
-    }
+  check = document.createElement("img");
+  check.classList.add("reqImg");
+  check.src = "images/check.svg";
 
-    const numChar = new RegExp(/[0-9!@#$%^&*()_+={}\[\]:;<>,.?~\\\|\/-]/)
-    if (numChar.test(enteredPass)) {
-        console.log("Number or special character satisfied");
-    }
+  cross = document.createElement("img");
+  cross.classList.add("reqImg");
+  cross.src = "images/cross.svg";
 
-    const minEightChars = new RegExp(/^.{8,}$/)
-    if (minEightChars.test(enteredPass)) {
-        console.log("Minimum 8 characters satisfied");
-    }
+  const uppercaseReq = document.getElementById("uppercaseReq");
+  if (uppercase.test(enteredPass)) {
+    uppercaseReq.querySelector("img").src = "images/check.svg";
+  } else {
+    uppercaseReq.querySelector("img").src = "images/cross.svg";
+  }
 
-})
+  const lowercaseReq = document.getElementById("lowercaseReq");
+  if (lowercase.test(enteredPass)) {
+    lowercaseReq.querySelector("img").src = "images/check.svg";
+  } else {
+    lowercaseReq.querySelector("img").src = "images/cross.svg";
+  }
+
+  const numCharReq = document.getElementById("numCharReq");
+  if (numChar.test(enteredPass)) {
+    numCharReq.querySelector("img").src = "images/check.svg";
+  } else {
+    numCharReq.querySelector("img").src = "images/cross.svg";
+  }
+
+  const lengthReq = document.getElementById("lengthReq");
+  if (minEightChars.test(enteredPass)) {
+    lengthReq.querySelector("img").src = "images/check.svg";
+  } else {
+    lengthReq.querySelector("img").src = "images/cross.svg";
+  }
+}
+
+// Get the password field
+passField = document.getElementById("password");
+// When the password field is active, display a tooltip
+tooltip = document.getElementById("passTooltip");
+passField.addEventListener("focus", (event) => {
+  tooltip.style.display = "flex";
+  const enteredPass = passField.value;
+  updateReqs(enteredPass);
+});
+
+passField.addEventListener("blur", (event) => {
+  tooltip.style.display = "none";
+
+  // Reset tooltip
+  const reqDivs = tooltip.querySelectorAll("div");
+  reqDivs.forEach((div) => {
+    div.querySelector("img").src = "images/cross.svg";
+  });
+});
+
+// Give live feedback on password input
+passField.addEventListener("input", (event) => {
+  const enteredPass = passField.value;
+  updateReqs(enteredPass);
+});
+
+const confirmMsg = document.getElementById("confirmMsg");
+const confirmField = document.getElementById("confirm-password");
+confirmField.addEventListener("input", (event) => {
+  if (confirmField.value !== passField.value) {
+    confirmMsg.style.display = "flex";
+  } else {
+    confirmMsg.style.display = "none";
+  }
+});
+confirmField.addEventListener("focus", (event) => {
+  if (confirmField.value !== passField.value) {
+    confirmMsg.style.display = "flex";
+  } else {
+    confirmMsg.style.display = "none";
+  }
+});
+confirmField.addEventListener("blur", (event) => {
+  confirmMsg.style.display = "none";
+});
